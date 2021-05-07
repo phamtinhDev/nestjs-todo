@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 
 import { AppConfigModule } from './config/app/config.module';
 import { PostgreModule } from './providers/database/postgresql/provider.module';
+import { UserModule } from './models/user/user.module';
 
 @Module({
-  imports: [AppConfigModule, PostgreModule],
+  imports: [AppConfigModule, PostgreModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
