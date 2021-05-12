@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import CreateTodoDto from './dto/createTodo.dto';
 import TodoEntity from './entities/todo.entity';
+import * as dayjs from 'dayjs';
+import UpdateTodoDto from './dto/updateTodo.dto';
 
 @Injectable()
 export class TodoService {
@@ -11,17 +13,95 @@ export class TodoService {
     private todoRepository: Repository<TodoEntity>,
   ) {}
 
-  async create(createData: CreateTodoDto): Promise<TodoEntity> {
-    const newTodo = await this.todoRepository.create(createData);
-    await this.todoRepository.save(newTodo);
-    return newTodo;
+  async create(createData: CreateTodoDto): Promise<any> {
+    await this.todoRepository
+      .createQueryBuilder()
+      .insert()
+      .into(TodoEntity)
+      .values([
+        {
+          ...createData,
+          dueDate: dayjs(createData.dueDate, 'HH:mm DD/MM/YYYY').format(),
+        },
+      ])
+      .execute();
+
+    return { message: 'Tạo công việc thành công!' };
   }
 
-  async readAll() {}
+  async readAll(): Promise<any[]> {
+    const todos = await this.todoRepository
+      .createQueryBuilder('todo')
+      .getMany();
 
-  async read() {}
+    const newArray: any[] = todos.map((el: TodoEntity) => {
+      return {
+        ...el,
+        piority: this.setPiority(el.piority),
+        dueDate: dayjs(el.dueDate).format('HH:mm DD/MM/YYYY'),
+        status: this.setStatus(el.status),
+      };
+    });
 
-  async update() {}
+    return newArray;
+  }
 
-  async delete() {}
+  async read(id: string): Promise<any> {
+    const todo = await this.todoRepository
+      .createQueryBuilder('todo')
+      .where('todo.id = :id', { id })
+      .getOne();
+
+    return {
+      ...todo,
+      dueDate: dayjs(todo.dueDate).format('HH:mm DD/MM/YYYY'),
+      status: this.setStatus(todo.status),
+    };
+  }
+
+  async update(id: string, dataUpdate: UpdateTodoDto) {
+    await this.todoRepository
+      .createQueryBuilder()
+      .update(TodoEntity)
+      .set(dataUpdate)
+      .where('id = :id', { id })
+      .execute();
+
+    return { message: 'Cập nhật thành công!' };
+  }
+
+  async delete(id: string) {
+    await this.todoRepository
+      .createQueryBuilder()
+      .delete()
+      .from(TodoEntity)
+      .where('id = :id', { id })
+      .execute();
+
+    return { message: 'Xóa thành công!' };
+  }
+
+  setPiority(piority: number) {
+    switch (piority) {
+      case 1:
+        return 'Low';
+      case 2:
+        return 'Default';
+      case 3:
+        return 'High';
+      default:
+        return '';
+    }
+  }
+
+  setStatus(status: boolean) {
+    switch (status) {
+      case true:
+        return 'Đã hoàn thành';
+      case false:
+        return 'Chưa hoàn thành';
+      default:
+        return '';
+    }
+  }
 }

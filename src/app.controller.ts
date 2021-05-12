@@ -18,10 +18,12 @@ export class AppController {
   }
 
   @Get()
-  @Render('index')
-  root() {
-    return { message: 'Xin chao' };
-  }
+  @Render('page/index')
+  home() {}
+
+  @Get('login')
+  @Render('pages/login')
+  async loginUI() {}
 
   @Post('login')
   async login(@Body() datalogin: LoginDto) {

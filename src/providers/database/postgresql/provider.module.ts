@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import TodoEntity from 'src/models/todo/entities/todo.entity';
 
 import { PostgreConfigModule } from '../../../config/database/postgresql/config.module';
 import { PostgreConfigService } from '../../../config/database/postgresql/config.service';
-import User from '../../../models/user/entities/user.entity';
+import UserEntity from '../../../models/user/entities/user.entity';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import User from '../../../models/user/entities/user.entity';
         username: postgreConfig.user,
         password: postgreConfig.password,
         database: postgreConfig.database,
-        entities: [User],
+        entities: [UserEntity, TodoEntity],
         synchronize: true,
       }),
     }),

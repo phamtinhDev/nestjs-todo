@@ -1,0 +1,49 @@
+<!-- general form elements -->
+<div class="card card-primary">
+  <!-- form start -->
+  <form id="quickForm">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="taskName">Tên công việc</label>
+            <input type="text" name="taskName" class="form-control" id="taskName" value="<%= todo.taskName%>">
+          </div>
+          <div class="form-group">
+            <label for="piority">Độ ưu tiên</label>
+            <select class="form-control" name="piority" id="piority">
+              <option selected value="">--- Chọn ---</option>
+              <option <%= todo && todo.piority == 1 ? 'selected' : '' %> value="1">Low</option>
+              <option <%= todo && todo.piority == 2 ? 'selected' : '' %> value="2">Default</option>
+              <option <%= todo && todo.piority == 3 ? 'selected' : '' %> value="3">High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dueDate">Thời gian hết hạn</label>
+            <div class="input-group date" id="dueDate" data-target-input="nearest">
+              <input type="text" class="form-control datetimepicker-input" data-target="#dueDate" name="dueDate"
+                autocomplete="off" value="<%= todo.dueDate %>"/>
+              <div class="input-group-append" data-target="#dueDate" data-toggle="datetimepicker">
+                <div class="input-group-text">
+                  <i class="fa fa-calendar"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="description">Mô tả</label>
+            <textarea class="form-control" name="description" id="description" rows="5"><%= todo.description %></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      <button type="button" id="cancelBtn" class="btn btn-default">Quay lại</button>
+      <button type="submit" class="btn btn-primary">Xác nhận</button>
+    </div>
+  </form>
+</div>
+<!-- /.card -->

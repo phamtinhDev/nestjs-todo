@@ -8,7 +8,10 @@ export class CreateTodoDto {
   description: string;
 
   @IsNotEmpty()
-  dueDate: string;
+  dueDate: Date;
+
+  @IsNotEmpty()
+  piority: number;
 }
 
 export default CreateTodoDto;
