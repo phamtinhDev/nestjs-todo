@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import TodoEntity from 'src/models/todo/entities/todo.entity';
+import TodoEntity from '../../../models/todo/entities/todo.entity';
 
 import { PostgreConfigModule } from '../../../config/database/postgresql/config.module';
 import { PostgreConfigService } from '../../../config/database/postgresql/config.service';

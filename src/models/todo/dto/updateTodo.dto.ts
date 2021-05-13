@@ -6,6 +6,8 @@ export class UpdateTodoDto {
   dueDate: Date;
 
   piority: number;
+
+  status: boolean;
 }
 
 export default UpdateTodoDto;

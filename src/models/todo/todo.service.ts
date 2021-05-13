@@ -63,25 +63,41 @@ export class TodoService {
     await this.todoRepository
       .createQueryBuilder()
       .update(TodoEntity)
-      .set(dataUpdate)
+      .set({
+        ...dataUpdate,
+        dueDate: dayjs(dataUpdate.dueDate, 'HH:mm DD/MM/YYYY').format(),
+      })
       .where('id = :id', { id })
       .execute();
 
     return { message: 'Cập nhật thành công!' };
   }
 
-  async delete(id: string) {
+  async updateDoneTask(ids: string[]) {
+    ids.forEach(async (id) => {
+      await this.todoRepository
+        .createQueryBuilder()
+        .update(TodoEntity)
+        .set({ status: true })
+        .where('id = :id', { id })
+        .execute();
+    });
+
+    return { message: 'Cập nhật thành công!' };
+  }
+
+  async delete(ids: string[]) {
     await this.todoRepository
       .createQueryBuilder()
       .delete()
       .from(TodoEntity)
-      .where('id = :id', { id })
+      .where('id IN (:...ids)', { ids })
       .execute();
 
     return { message: 'Xóa thành công!' };
   }
 
-  setPiority(piority: number) {
+  setPiority(piority: number): string {
     switch (piority) {
       case 1:
         return 'Low';
@@ -94,7 +110,7 @@ export class TodoService {
     }
   }
 
-  setStatus(status: boolean) {
+  setStatus(status: boolean): string {
     switch (status) {
       case true:
         return 'Đã hoàn thành';

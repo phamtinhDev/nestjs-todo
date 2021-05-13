@@ -20,7 +20,7 @@ $(function () {
         data: data,
         success: function (result) {
           toastr.success(result.message);
-          $formCreateTodo.trigger('reset');
+          return window.location.replace('/todo');
         },
         error: function (error) {
           toastr.error(error.responseJSON.message);

@@ -1,70 +1,30 @@
 $(function () {
-  var $inputPageID = $('#inputPageID');
-  var $inputChatID = $('#inputChatID');
-  var $inputAccessToken = $('#inputAccessToken');
-  var $inputPageName = $('#inputPageName');
-  var $inputMessageWelcome = $('#inputMessageWelcome');
-  var $inputMessageGoodbye = $('#inputMessageGoodbye');
   var $cancelButton = $('#cancelBtn');
-  var $modalVariable = $('#modal-variable');
-  var $btnSaveMessage = $('#btn_save_message');
-  var $inputMessage = $('#message');
 
-  var fieldName = '';
-
-  $(document).on('click', '.input-message', function () {
-    fieldName = $(this).data('target');
-    var message = $(this).val();
-    $inputMessage.val(message);
-    $modalVariable.modal('show');
-  });
-
-  $(document).on('click', '.add-variable', function () {
-    var targetValue = $(this).data('target');
-    var cursorPos = $inputMessage.prop('selectionStart');
-    var value = $inputMessage.val();
-    var textBefore = value.substring(0, cursorPos);
-    var textAfter = value.substring(cursorPos, value.length);
-    $inputMessage.val(textBefore + targetValue + textAfter);
-  });
-
-  $btnSaveMessage.click(function () {
-    var message = $inputMessage.val();
-    if (fieldName == 'message-welcome') {
-      $inputMessageWelcome.val(message);
-    } else {
-      $inputMessageGoodbye.val(message);
-    }
-    return $modalVariable.modal('hide');
-  });
-
-  var url = window.location.href;
-  var string = url.substring(url.lastIndexOf('/') + 1).split('?');
-  var id = string[0];
   $.validator.setDefaults({
     submitHandler: function () {
-      var data = {};
+      let data = {};
+      let url = window.location.pathname;
+      let id = url.substring(url.lastIndexOf('/') + 1);
 
-      data = {
-        pageID: $inputPageID.val(),
-        pageName: $inputPageName.val(),
-        chatEntryPointId: $inputChatID.val(),
-        access_token: $inputAccessToken.val(),
-        welcome: $inputMessageWelcome.val(),
-        goodbye: $inputMessageGoodbye.val(),
-        active: $('#checkboxActive:checked').val() ? true : false,
-      };
+      $('.input').each(function () {
+        let key = this.name;
+        let value = $(this).val();
+        if (value) {
+          data[key] = value;
+        }
+      });
+
+      console.log('data: ', data);
 
       $.ajax({
         type: 'PUT',
-        url:
-          '/manage-pages/edit/' +
-          id +
-          '?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhcGkiLCJwd2QiOiJBUEllckAxMjMifQ.zbcraPNh7IvmAFX0D2dBjVfRB_vRzkAJA6P3BU3dh2E',
+        url: `/todo/${id}`,
         cache: 'false',
-        data: { data, _id: id },
+        data: data,
         success: function (result) {
           toastr.success(result.message);
+          return window.location.replace('/todo');
         },
         error: function (error) {
           toastr.error(error.responseJSON.message);
@@ -72,6 +32,7 @@ $(function () {
       });
     },
   });
+
   $('#quickForm').validate({
     rules: {
       taskName: {

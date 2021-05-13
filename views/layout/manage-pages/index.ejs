@@ -5,15 +5,23 @@
         <a href="/todo/create">
           <button type="button" class="btn btn-success">
             <i class="fas fa-plus"></i>
-            Tạo Task
+            Tạo mới
           </button>
         </a>
+        <button type="button" class="btn btn-primary btn-done-task">
+          <i class="fas fa-check"></i>
+          Hoàn thành
+        </button>
+        <button type="button" class="btn btn-danger btn-remove-task">
+          <i class="fas fa-trash"></i>
+          Xóa
+        </button>
       </div>
       <div class="card-body">
         <table id="example2" class="table table-bordered table-hover">
           <thead>
             <tr>
-              <th class="text-center"><input type="checkbox" class="checkbox-active" page-id="" /></th>
+              <th class="text-center"><input type="checkbox" class="checkbox-all" page-id="" /></th>
               <th class="text-center">Tên công việc</th>
               <th class="text-center">Mô tả</th>
               <th class="text-center">Độ ưu tiên</th>
@@ -26,7 +34,7 @@
             <% todos.forEach(function(el) { %>
               <tr>
                 <td class="text-center">
-                  <input type="checkbox" class="checkbox-active" page-id="" />
+                  <input type="checkbox" class="checkbox" page-id="<%= el.id %>" />
                 </td>
                 <td class="text-break text-center">
                   <%= el.taskName %>
@@ -44,13 +52,13 @@
                   <%= el.status %>
                 </td>
                 <td class="text-center">
-                  <a href="/todo/edit/<%= el.id%>">
+                  <a href="/todo/edit/<%= el.id %>">
                     <button type="button" class="btn btn-primary btn-xs">
                       <i class="fas fa-pen"></i>
                       Sửa
                     </button>
                   </a>
-                  <a class="btn-remove" page-id="">
+                  <a class="btn-remove" page-id="<%= el.id %>">
                     <button type="button" class="btn btn-danger btn-xs">
                       <i class="fas fa-trash"></i>
                       Xóa

@@ -1,9 +1,20 @@
-import { Controller, Post, Body, Get, Render, Res } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Render,
+  Req,
+  UseGuards,
+  Redirect,
+  Res,
+} from '@nestjs/common';
 import { AppService } from './app.service';
-import { LoginDto } from './models/user/dto/login.dto';
 import { AuthService } from './authentication/auth.service';
 import CreateUserDto from './models/user/dto/createUser.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { LocalAuthGuard } from './authentication/guards/local-auth.guard';
+import { AuthenticateGuard } from './authentication/guards/authenticated.guard';
 
 @Controller()
 export class AppController {
@@ -12,26 +23,43 @@ export class AppController {
     readonly authService: AuthService,
   ) {}
 
-  @Get('/favicon.ico')
-  favicon(@Res() res: Response) {
-    return res.status(204).end();
-  }
-
-  @Get()
-  @Render('page/index')
-  home() {}
-
   @Get('login')
-  @Render('pages/login')
-  async loginUI() {}
+  getLogin(@Req() req: Request, @Res() res: Response) {
+    if (req.isAuthenticated()) {
+      return res.redirect('/todo');
+    }
 
-  @Post('login')
-  async login(@Body() datalogin: LoginDto) {
-    return this.authService.login(datalogin);
+    return res.render('pages/login');
   }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  @Redirect('/todo')
+  async postLogin() {}
 
   @Post('register')
-  async register(@Body() body: CreateUserDto) {
+  @Redirect('/login')
+  async postRegister(@Body() body: CreateUserDto) {
     return this.authService.register(body);
   }
+
+  @UseGuards(AuthenticateGuard)
+  @Get()
+  @Redirect('/todo')
+  getHome() {}
+
+  @UseGuards(AuthenticateGuard)
+  @Get('/logout')
+  @Redirect('/login')
+  getLogout(@Req() req: Request) {
+    return req.logOut();
+  }
+
+  @Get('/404')
+  @Render('pages/404')
+  getError404() {}
+
+  @Get('/401')
+  @Render('pages/401')
+  getError401() {}
 }

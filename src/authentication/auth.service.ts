@@ -43,7 +43,9 @@ export class AuthService {
     try {
       const user = await this.usersService.getByEmail(email);
 
-      if (!user || user.password !== password) return null;
+      if (!user && !(await user.comparePassword(password))) {
+        throw new Error('Tài khoản hoặc mật khẩu không đúng!');
+      }
 
       delete user.password;
 

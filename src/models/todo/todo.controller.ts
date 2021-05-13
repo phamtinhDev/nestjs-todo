@@ -1,17 +1,22 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
   Put,
   Render,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthenticateGuard } from '../../authentication/guards/authenticated.guard';
 import CreateTodoDto from './dto/createTodo.dto';
+import UpdateTodoDto from './dto/updateTodo.dto';
 import TodoEntity from './entities/todo.entity';
 import { TodoService } from './todo.service';
 
 @Controller('todo')
+@UseGuards(AuthenticateGuard)
 export class TodoController {
   constructor(private readonly _todoService: TodoService) {}
 
@@ -54,6 +59,17 @@ export class TodoController {
     };
   }
 
-  @Put()
-  async updateTask() {}
+  @Put(':id')
+  async updateTask(@Param('id') id: string, @Body() dataUpdate: UpdateTodoDto) {
+    return this._todoService.update(id, dataUpdate);
+  }
+
+  @Put() updateDoneTask(@Body('ids') ids: string[]) {
+    return this._todoService.updateDoneTask(ids);
+  }
+
+  @Delete('remove')
+  async removeTask(@Body('ids') ids: string[]) {
+    return this._todoService.delete(ids);
+  }
 }

@@ -1,7 +1,6 @@
 $(function () {
-  // Xóa phần tử
-  $(document).on('click', '.btn-remove', function () {
-    var pageID = $(this).attr('page-id');
+  function removeTask(ids) {
+    if (!ids || ids.length <= 0) return;
 
     Swal.fire({
       title: 'Cảnh báo',
@@ -15,61 +14,68 @@ $(function () {
       if (result.isConfirmed) {
         $.ajax({
           type: 'DELETE',
-          url:
-            '/manage-pages/delete?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhcGkiLCJwd2QiOiJBUEllckAxMjMifQ.zbcraPNh7IvmAFX0D2dBjVfRB_vRzkAJA6P3BU3dh2E',
+          url: '/todo/remove',
           cache: 'false',
-          data: { id: pageID },
-          success: function (result) {
-            window.location.reload();
+          data: { ids },
+          success: function () {
+            return window.location.reload();
           },
           error: function (error) {
-            toastr.error(error.responseJSON.message);
+            return toastr.error(error.responseJSON.message);
           },
         });
       }
     });
-  });
+  }
 
-  $(document).on('click', '.checkbox-active', function () {
-    var pageID = $(this).attr('page-id');
-    var isActive = this.checked ? true : false;
-  });
+  function updateTask(ids) {
+    if (!ids || ids.length <= 0) return;
 
-  $(document).on('click', '#async_data', function () {
-    $('#icon_sync').addClass('fa-spin');
-
-    setTimeout(function () {
-      $.ajax({
-        type: 'GET',
-        url:
-          '/manage-pages/async-data?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhcGkiLCJwd2QiOiJBUEllckAxMjMifQ.zbcraPNh7IvmAFX0D2dBjVfRB_vRzkAJA6P3BU3dh2E',
-        success: function (result) {
-          $('#icon_sync').removeClass('fa-spin');
-          toastr.success(result.message);
-        },
-        error: function (error) {
-          $('#icon_sync').removeClass('fa-spin');
-          toastr.error(error.responseJSON.message);
-        },
-      });
-    }, 1000);
-  });
-
-  function updateTask() {
     $.ajax({
       type: 'PUT',
       url: '/todo',
       cache: 'false',
-      data: {
-        active: isActive,
-        _id: pageID,
-      },
+      data: { ids },
       success: function (result) {
         toastr.success(result.message);
+        window.location.reload();
       },
       error: function (error) {
-        toastr.error(error.responseJSON.message);
+        return toastr.error(error.responseJSON.message);
       },
     });
   }
+
+  $(document).on('click', '.btn-remove', function () {
+    let ids = [];
+    ids.push($(this).attr('page-id'));
+
+    return removeTask(ids);
+  });
+
+  $('.btn-remove-task').on('click', function () {
+    let ids = [];
+    $('.checkbox').each(function () {
+      if ($(this).is(':checked')) {
+        ids.push($(this).attr('page-id'));
+      }
+    });
+
+    return removeTask(ids);
+  });
+
+  $('.btn-done-task').on('click', function () {
+    let ids = [];
+    $('.checkbox').each(function () {
+      if ($(this).is(':checked')) {
+        ids.push($(this).attr('page-id'));
+      }
+    });
+
+    return updateTask(ids);
+  });
+
+  $('.checkbox-all').click(function () {
+    $('input.checkbox').not(this).prop('checked', this.checked);
+  });
 });
