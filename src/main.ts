@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import flash = require('connect-flash');
 
+import { ValidationPipe } from './common/validations/validationRegister.pipe';
 import { AppModule } from './app.module';
 import { AppConfigService } from './config/app/config.service';
 import { AuthExceptionFilter } from './common/filters/auth-exception.filter';
@@ -16,9 +17,9 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
 
-  app.useGlobalPipes(new ValidationPipe());
-
   const appConfig: AppConfigService = app.get('AppConfigService');
+
+  app.useGlobalPipes(new ValidationPipe());
 
   app.useGlobalFilters(new AuthExceptionFilter());
 
@@ -32,6 +33,7 @@ async function bootstrap() {
 
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(flash());
 
   await app.listen(appConfig.port);
 }

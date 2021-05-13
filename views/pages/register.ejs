@@ -17,17 +17,40 @@
   <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
 </head>
 
-<body class="hold-transition login-page">
-  <div class="login-box">
-    <!-- /.login-logo -->
+<body class="hold-transition register-page">
+  <div class="register-box">
     <div class="card card-outline card-primary">
       <div class="card-header text-center">
-        <a href="#" class="h1"><b>Đăng nhập</b></a>
+        <a href="#" class="h1"><b>Đăng ký</b></a>
       </div>
       <div class="card-body">
-        <p class="login-box-msg text-danger"><%= message ? message : '' %></p>
+        <p class="register-box-msg text-danger"><%= message ? message : '' %></p>
 
-        <form action="/login" method="post">
+        <form action="/register" method="post">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="First name" name="firstName">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Last name" name="lastName">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="User name" name="userName">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+          </div>
           <div class="input-group mb-3">
             <input type="email" class="form-control" placeholder="Email" name="email">
             <div class="input-group-append">
@@ -44,26 +67,29 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-3"></div>
-            <!-- /.col -->
-            <div class="col-6">
-              <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Retype password" name="confirmPassword">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
             </div>
-            <!-- /.col -->
+          </div>
+          <div class="row text-center">
+            <div class="col-3"></div>
+            <div class="col-6">
+              <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </div>
             <div class="col-3"></div>
           </div>
         </form>
 
-        <p class="mb-0">
-          <a href="/register" class="text-center">Register a new membership</a>
-        </p>
+        <a href="/login" class="text-center">I already have a membership</a>
       </div>
-      <!-- /.card-body -->
-    </div>
-    <!-- /.card -->
+      <!-- /.form-box -->
+    </div><!-- /.card -->
   </div>
-  <!-- /.login-box -->
+  <!-- /.register-box -->
 
   <!-- jQuery -->
   <script src="../../plugins/jquery/jquery.min.js"></script>

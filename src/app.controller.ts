@@ -24,12 +24,13 @@ export class AppController {
   ) {}
 
   @Get('login')
+  @Render('pages/login')
   getLogin(@Req() req: Request, @Res() res: Response) {
     if (req.isAuthenticated()) {
       return res.redirect('/todo');
     }
 
-    return res.render('pages/login');
+    return { message: req.flash('error') };
   }
 
   @UseGuards(LocalAuthGuard)
@@ -37,10 +38,20 @@ export class AppController {
   @Redirect('/todo')
   async postLogin() {}
 
+  @Get('register')
+  @Render('pages/register')
+  getRegister(@Req() req: Request, @Res() res: Response) {
+    if (req.isAuthenticated()) {
+      return res.redirect('/todo');
+    }
+
+    return { message: req.flash('error') };
+  }
+
   @Post('register')
   @Redirect('/login')
-  async postRegister(@Body() body: CreateUserDto) {
-    return this.authService.register(body);
+  async postRegister(@Body() createData: CreateUserDto) {
+    return this.authService.register(createData);
   }
 
   @UseGuards(AuthenticateGuard)
