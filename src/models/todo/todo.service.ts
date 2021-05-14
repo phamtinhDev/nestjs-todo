@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import CreateTodoDto from './dto/createTodo.dto';
 import TodoEntity from './entities/todo.entity';
-import dayjs = require('dayjs');
+import * as moment from 'moment';
 import UpdateTodoDto from './dto/updateTodo.dto';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class TodoService {
       .values([
         {
           ...createData,
-          dueDate: dayjs(createData.dueDate, 'HH:mm DD/MM/YYYY').format(),
+          dueDate: moment(createData.dueDate, 'HH:mm DD/MM/YYYY').format(),
         },
       ])
       .execute();
@@ -38,7 +38,7 @@ export class TodoService {
       return {
         ...el,
         piority: this.setPiority(el.piority),
-        dueDate: dayjs(el.dueDate).format('HH:mm DD/MM/YYYY'),
+        dueDate: moment(el.dueDate).format('HH:mm DD/MM/YYYY'),
         status: this.setStatus(el.status),
       };
     });
@@ -54,7 +54,7 @@ export class TodoService {
 
     return {
       ...todo,
-      dueDate: dayjs(todo.dueDate).format('HH:mm DD/MM/YYYY'),
+      dueDate: moment(todo.dueDate).format('HH:mm DD/MM/YYYY'),
       status: this.setStatus(todo.status),
     };
   }
@@ -65,7 +65,7 @@ export class TodoService {
       .update(TodoEntity)
       .set({
         ...dataUpdate,
-        dueDate: dayjs(dataUpdate.dueDate, 'HH:mm DD/MM/YYYY').format(),
+        dueDate: moment(dataUpdate.dueDate, 'HH:mm DD/MM/YYYY').format(),
       })
       .where('id = :id', { id })
       .execute();
